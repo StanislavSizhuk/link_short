@@ -51,6 +51,8 @@ func (h *Handlers) CreateShortURL(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetFullUrl(w http.ResponseWriter, r *http.Request) {
 	var (
 		shortURL string
+		err      error
+		modelURL *url.URL
 	)
 
 	if r.Method != http.MethodGet {
@@ -58,6 +60,15 @@ func (h *Handlers) GetFullUrl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	shortURL = r.PathValue(consts.ShortURLParam)
-	fmt.Println("shortURL:", shortURL)
-	w.WriteHeader(http.StatusNotFound)
+
+	modelURL, err = h.app.GetFullURL(r.Context(), shortURL)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+
+		return
+	}
+
+	w.Header().Set("Location", modelURL.Full())
+	w.WriteHeader(http.StatusTemporaryRedirect)
+
 }

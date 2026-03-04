@@ -5,6 +5,10 @@ type URL struct {
 	short string
 }
 
+func NewURL(full string) *URL {
+	return &URL{full: full}
+}
+
 func (u *URL) Full() string {
 	return u.full
 }

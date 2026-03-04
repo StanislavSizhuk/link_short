@@ -9,14 +9,20 @@ type Storage struct {
 	URLs map[string]*url.URL
 }
 
-func (s *Storage) SaveURl(_ context.Context, url *url.URL) error {
-	s.URLs[(url.Short())] = url
+func NewStorage() *Storage {
+	store := Storage{
+		URLs: make(map[string]*url.URL),
+	}
+	return &store
+}
+func (s *Storage) SaveURL(_ context.Context, url *url.URL) error {
+	s.URLs[url.Short()] = url
 	return nil
 }
 func (s *Storage) GetURLByFull(_ context.Context, fullUrl string) (*url.URL, error) {
-	for _, url := range s.URLs {
-		if url.Full() == fullUrl {
-			return url, nil
+	for _, v := range s.URLs {
+		if v.Full() == fullUrl {
+			return v, nil
 		}
 
 	}
