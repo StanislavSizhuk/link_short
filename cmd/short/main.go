@@ -3,24 +3,22 @@ package main
 import (
 	"fmt"
 	"linkshort/internal/apllication"
-	"linkshort/internal/consts"
 	"linkshort/internal/repository/memory"
 	"linkshort/internal/transport/rest"
+	"linkshort/internal/transport/router"
 	"net/http"
 )
 
 func main() {
-	mux := http.NewServeMux()
+
 	store := memory.NewStorage()
 	app := apllication.NewApp(store)
 
 	handler := rest.NewHandlers(app)
 
-	mux.HandleFunc("/", handler.CreateShortURL)
+	rout := router.NewRouter(handler)
 
-	mux.HandleFunc(fmt.Sprintf("/{%s}", consts.ShortURLParam), handler.GetFullUrl)
-
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(":8080", rout); err != nil {
 		fmt.Println(err)
 	}
 }

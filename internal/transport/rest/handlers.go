@@ -8,6 +8,8 @@ import (
 	"linkshort/internal/domain/url"
 
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type Handlers struct {
@@ -55,11 +57,7 @@ func (h *Handlers) GetFullUrl(w http.ResponseWriter, r *http.Request) {
 		modelURL *url.URL
 	)
 
-	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	shortURL = r.PathValue(consts.ShortURLParam)
+	shortURL = chi.URLParam(r, consts.ShortURLParam)
 
 	modelURL, err = h.app.GetFullURL(r.Context(), shortURL)
 	if err != nil {
